@@ -106,8 +106,12 @@ class BstuParser(TimeTableParserInterface):
             if raw.find('div', {'class': 'place_'+cellType}) is None:
                 #print(group)
                 return []
+
+
+
             classLocation = raw.find('div', {'class': 'place_'+cellType}).find('a').text
-            className = raw.find('div', {'class': 'subject_'+cellType}).attrs["title"]
+            className = raw.find('div', {'class': 'place_' + cellType}).text.split(' ')[0] + '. ' + \
+                        raw.find('div', {'class': 'subject_'+cellType}).attrs["title"]
 
             if isUpper:
                 classStartTime = timeClasses[1][num][0]

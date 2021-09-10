@@ -16,7 +16,7 @@ with open('lectors.txt', 'w') as f:
     for t in test0:
         f.write(str(t)+'\n')
 
-with open('bukep_rasp.txt', 'w') as f:
+with open('bukep_rasp0.txt', 'w') as f:
     for t in test:
         f.write(str(t)+'\n')
 
