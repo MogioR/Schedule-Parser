@@ -196,22 +196,62 @@ class BukepParser(TimeTableParserInterface):
             data = classesData[i].find_all('span')
             classLocation = str(data[1].text)
 
-            buf0 = data[0].text.replace('Лекционное занятие', '@')
-            buf0 = buf0.replace('Практическое занятие', '@')
-            buf0 = buf0.replace('Лабораторное занятие', '@')
-            buf0 = buf0.replace('Экзамен', '@')
-            buf0 = buf0.replace('Зачет', '@')
-            buf0 = buf0.replace('Консультация', '@')
-            buf0 = buf0.replace('Курсовая работа', '@')
-            buf0 = buf0.replace('Контрольная работа', '@')
-
-            buf1 = buf0.split('@')
+            buf0 = str(data[0]).replace('</span>', '')
+            buf0 = buf0.replace('<span>', '')
+            buf1 = buf0.split('<br/>')
             className = buf1[0]
+            classGroups = []
+            buf2 = buf1[1].split(',')
+            if len(buf2) == 1:
+                buf3 = buf1[1].split(' ')
+                buf3[-1] = buf3[-1].replace(' ', '')
+                buf3[-1] = buf3[-1].replace('-', '')
+                classGroups.append(buf3[-1])
+                if buf3[0] == 'Лекционное':
+                    className = 'Лекц. ' + buf1[0]
+                elif buf3[0] == 'Практическое':
+                    className = 'Практ. ' + buf1[0]
+                elif buf3[0] == 'Лабораторное':
+                    className = 'Лаб. ' + buf1[0]
+                elif buf3[0] == 'Экзамен':
+                    className = 'Экз. ' + buf1[0]
+                elif buf3[0] == 'Зачет':
+                    className = 'Зач. ' + buf1[0]
+                elif buf3[0] == 'Консультация':
+                    className = 'Конс. ' + buf1[0]
+            else:
+                for j in range(1, len(buf2)):
+                    buf2[j] = buf2[j].replace(' ', '')
+                    buf2[j] = buf2[j].replace('-', '')
+                    classGroups.append(buf2[j])
+                buf3 = buf2[1].split(' ')
+                buf3[-1] = buf3[-1].replace('-', '')
+                classGroups.append(buf3[-1])
 
-            buf1[1] = buf1[1].replace(' ', '')
-            buf1[1] = buf1[1].replace('-', '')
+                if buf2[0] == 'Лекционное':
+                    className = 'Лекц. ' + buf1[0]
+                elif buf2[0] == 'Практическое':
+                    className = 'Практ. ' + buf1[0]
+                elif buf2[0] == 'Лабораторное':
+                    className = 'Лаб. ' + buf1[0]
+                elif buf2[0] == 'Экзамен':
+                    className = 'Экз. ' + buf1[0]
+                elif buf2[0] == 'Зачет':
+                    className = 'Зач. ' + buf1[0]
+                elif buf2[0] == 'Консультация':
+                    className = 'Конс. ' + buf1[0]
 
-            classGroups = buf1[1].split(',')
+            #buf0 = buf0.replace('Лекционное занятие', '@')
+            #buf0 = buf0.replace('Практическое занятие', '@')
+            #buf0 = buf0.replace('Лабораторное занятие', '@')
+            #buf0 = buf0.replace('Экзамен', '@')
+            #buf0 = buf0.replace('Зачет', '@')
+            #buf0 = buf0.replace('Консультация перед экзаменом', '@')
+            #buf0 = buf0.replace('КоclassName = buf1[0]нсультация', '@')
+            #buf0 = buf0.replace('Курсовая работа', '@')
+            #buf0 = buf0.replace('Контрольная работа', '@')
+            #buf0 = buf0.replace('Курсовой проект', '@')
+            #buf0 = buf0.replace('Курсовой проект', '@'
 
             times = classesTimes[dayType][classNum-1].split(' ')
             classStartTime = times[0]
@@ -256,7 +296,6 @@ class BukepParser(TimeTableParserInterface):
         isNumerator = self.isNumerator()
         classesTimes = self.getClassesTimes()
         lecturers = self.getLecturers()
-
 
         for lecturer in lecturers:
             site = self.getSite(self.classesUrl.format(lecturer['department_id'], lecturer['id']), HEADERS)
