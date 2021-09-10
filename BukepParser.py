@@ -261,8 +261,8 @@ class BukepParser(TimeTableParserInterface):
         for lecturer in lecturers:
             site = self.getSite(self.classesUrl.format(lecturer['department_id'], lecturer['id']), HEADERS)
 
-            print(lecturer)
-            print(self.classesUrl.format(lecturer['department_id'], lecturer['id']))
+            if site.find('table', {"id": "tbl_page1"}) is None:
+                continue
             thisWeek = site.find('table', {"id": "tbl_page1"}).find_all('table', {"class": "tbl_day"})
             nextWeek = site.find('table', {"id": "tbl_page2"})
 
