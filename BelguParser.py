@@ -23,17 +23,6 @@ HEADERS_FOR_AJAX_JSON = {
               "Chrome/92.0.4515.159 YaBrowser/21.8.2.381 Yowser/2.5 Safari/537.36",
 "X-Requested-With": "XMLHttpRequest"}
 
-HEADERS_FOR_AJAX_HTML = {
-"Accept": "text/html, */*; q=0.01",
-"Accept-Encoding": "gzip, deflate, br",
-"Accept-Language": 'ru,en;q=0.9',
-"Connection": 'keep-alive',
-"Host": 'www.bsu.edu.ru',
-"Referer": 'https://www.bsu.edu.ru/bsu/resource/schedule/groups/',
-"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-              "Chrome/92.0.4515.159 YaBrowser/21.8.2.381 Yowser/2.5 Safari/537.36",
-"X-Requested-With": "XMLHttpRequest"}
-
 class BelguParser(TimeTableParserInterface):
     def __init__(self):
         self.homeUrl = 'https://www.bsu.edu.ru/bsu/resource/schedule'
@@ -121,8 +110,8 @@ class BelguParser(TimeTableParserInterface):
                     classNum = data[0].find('nobr').text.split(' ')[0]
                     classStartTime = classTime[0]
                     classEndTime = classTime[1]
-                    className = self.delSpace(re.sub("\(([^\[\]]+)\)","",re.sub(r'(\<(/?[^>]+)>)', '',
-                                                                                data[3].text).replace('\n', '')))
+                    className = data[2].text.replace('\n', '') + ' ' + self.delSpace(re.sub("\(([^\[\]]+)\)", "",
+                                                re.sub(r'(\<(/?[^>]+)>)', '', data[3].text).replace('\n', '')))
                     classGroup = [data[4].find('a').text]
                     classLocation = self.delSpace(re.sub("\(([^\[\]]+)\)","",re.sub(r'(\<(/?[^>]+)>)', '',
                                                             data[5].text).replace('\n', '').replace('\t\xa0', '')))
@@ -188,8 +177,6 @@ class BelguParser(TimeTableParserInterface):
                                                 headers=HEADERS_FOR_AJAX_JSON).content)[0]
 
         for i in range(1, len(select) - 1):
-            iter+=1
-
             departments = (json.loads(requests.post(self.lecturersKafUrl.format(select[i].attrs['id']),
                                                     headers=HEADERS_FOR_AJAX_JSON).content))
             time.sleep(SLEEP_TIME)
